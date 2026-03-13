@@ -8,8 +8,9 @@ from datetime import date # Import date from datetime module
 from pathlib import Path
 import numpy as np
 
-# Define path
-folder_path = Path(r'C:\Users\Micahh\Documents\School\_spring 26_\ICS 263 Data Visualization\google drive\happinessreport')
+
+# Define path (relative, for Streamlit Cloud compatibility)
+folder_path = Path(".")  # Current directory; change to Path("data") if you use a subfolder
 
 for file_path in folder_path.iterdir():
     if file_path.is_file():
