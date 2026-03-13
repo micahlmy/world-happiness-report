@@ -2,6 +2,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import glob
 import os
 from datetime import date # Import date from datetime module
@@ -68,7 +69,7 @@ combined_df = pd.concat(df_list, ignore_index=True)
 
 # Check for duplicate rows and remove them
 duplicate_rows = combined_df[combined_df.duplicated()]
-    combined_df = combined_df.drop_duplicates()
+combined_df = combined_df.drop_duplicates()
 
 # Create a country to region mapping from existing data to fill missing regions
 country_to_region_map = combined_df.dropna(subset=['Region']).set_index('Country')['Region'].to_dict()
@@ -194,10 +195,17 @@ region_mean.columns = ['Region', 'Year', 'Region Mean']
 filtered['error_pos'] = filtered['Upper Confidence Interval'] - filtered['Happiness Score']
 filtered['error_neg'] = filtered['Happiness Score'] - filtered['Lower Confidence Interval']
 
+# Aggregate data for bar plot
+country_stats = filtered.groupby('Country').agg(
+    mean_score=('Happiness Score', 'mean'),
+    std_error=('Standard Error', 'mean'),
+    region=('Region', 'first')
+).reset_index()
+
 # Uncertainty Aware Visualization
-fig = px.box(filtered, y='Happiness Score', x='Country', color='Region',
-                       points='all', # show all actual points
-                       title='Distribution of Happiness Score per Country (Box Plot)')
-fig.update_layout(xaxis_tickangle=-45) # Rotate country labels for better readability
+fig = px.bar(country_stats, x='Country', y='mean_score', color='region',
+             error_y='std_error',
+             title='Mean Happiness Score per Country with Standard Error Bars')
+fig.update_layout(xaxis_tickangle=-45)
 st.plotly_chart(fig)
 
