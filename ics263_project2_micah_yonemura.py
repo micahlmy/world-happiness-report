@@ -68,7 +68,7 @@ combined_df = pd.concat(df_list, ignore_index=True)
 
 # Check for duplicate rows and remove them
 duplicate_rows = combined_df[combined_df.duplicated()]
-    combined_df = combined_df.drop_duplicates()
+combined_df = combined_df.drop_duplicates()
 
 # Create a country to region mapping from existing data to fill missing regions
 country_to_region_map = combined_df.dropna(subset=['Region']).set_index('Country')['Region'].to_dict()
