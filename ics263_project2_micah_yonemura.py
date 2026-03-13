@@ -66,12 +66,9 @@ for filename in file_paths:
 # Concatenate all dataframes into one
 combined_df = pd.concat(df_list, ignore_index=True)
 
-# Check for duplicate rows
+# Check for duplicate rows and remove them
 duplicate_rows = combined_df[combined_df.duplicated()]
-print(f"Number of duplicate rows: {len(duplicate_rows)}")
-if len(duplicate_rows) > 0:
-    print("Duplicate rows found:")
-    print(duplicate_rows)
+    combined_df = combined_df.drop_duplicates()
 
 # Create a country to region mapping from existing data to fill missing regions
 country_to_region_map = combined_df.dropna(subset=['Region']).set_index('Country')['Region'].to_dict()
